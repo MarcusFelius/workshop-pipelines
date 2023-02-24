@@ -87,6 +87,8 @@ Once the wizard finishes the initial configuration, there are few other plugins 
 - `Performance`
 - `SonarQube Scanner`
 
+> **_MF:_** I needed to update Jenkins itself, plus a lot of plugins. Probably also installed another plugin. When it is missing a plugin, it will show a large Java error but it is basically missing another plugin -> see the manage plugin page. Also, if it needs plugins, a restart is needed before other plugins can build upon a not-installed plugin.
+
 ### SonarQube configuration
 
 To integrate SonarQube with Jenkins, the Jenkins plugin must be configured to reach out to the right SonarQube instance when required.
@@ -95,11 +97,15 @@ Before configuring that integration, a SonarQube API token must be created. That
 
 Login to SonarQube using the default credentials: both username and password are simply `admin`. On first run, a tutorial wizard will show but it can be skipped for now.
 
+> **_MF:_** `localhost:9000/sonarqube`
+
 Click on `Administration` on the top menu and afterwards on `Security` and `Users` in the horizonal menu below. In the `Administrator` user configuration row, there is a menu icon to the right with the label `Update Tokens`. Click on it, and in the pop-up dialog, in the text box below `Generate Tokens` enter `ci-sonarqube` (or any other meaningful name) and press the `Generate` button. The API token will be shown below. Take note of it, as this is the last time it will be shown in the UI.
 
 Before leaving SonarQube, let's configure the webhook that will be leveraged by SonarQube to let Jenkins know that a requested analysis has finished.
 
 Click on `Administration` on the top menu and afterwards on `Configuration`and `Webhooks` in the horizontal menu below. Click the `Create` button. Enter `ci-jenkins` for the webhook name, and for the URL, the Jenkins home URL appending `/sonarqube-webhook`. For example, for a server running on AWS EC2, the URL would look like: `http://ec2-xxx-xxx-xxx-xxx.eu-west-1.compute.amazonaws.com:9080/jenkins/sonarqube-webhook`. Click the `Create` button and configuration on the SonarQube side is ready.
+
+> **_MF:_** Jenkins home URl Appending: http://localhost:9080/sonarqube-webhook
 
 Login to Jenkins with the previously configured administrator credentials.
 
