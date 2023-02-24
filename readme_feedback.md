@@ -4,6 +4,9 @@ Workshop about CI/CD pipelines with Jenkins and Docker.
 
 Workshop delivered in UMA Hackers Week 6 and in Opensouthcode 2019.
 
+> **_MF:_** I will start adding my notes in this way. A branch is created that works on my Windows laptop. I'm using a Dell Latitude5420 Windows 11 Laptop.
+
+
 ## Preparing for the workshop
 
 Docker is the only pre-requisite. This workshop works with Docker native in any Linux box, with Docker for Mac, and with Docker for Windows.
@@ -12,47 +15,60 @@ Docker is the only pre-requisite. This workshop works with Docker native in any 
 
 Both Jenkins and SonarQube servers are required for running the pipelines and code inspection. Although there are many ways to have Jenkins and SonarQube up and running, this is probably the easiest, fastest one -- running them as Docker containers:
 
-    docker network create ci
+```bash
+docker network create ci
 
-    docker run --name ci-jenkins \
-        --user root \
-        --detach \
-        --network ci \
-        --publish 9080:8080 --publish 50000:50000 \
-        --mount type=volume,source=ci-jenkins-home,target=//var/jenkins_home \
-        --mount type=bind,source=/var/run/docker.sock,target=//var/run/docker.sock \
-        --mount type=bind,source=/usr/local/bin/docker,target=//usr/local/bin/docker \
-        --env JAVA_OPTS="-Xmx2048M" \
-        --env JENKINS_OPTS="--prefix=/jenkins" \
-        jenkins/jenkins:2.350
+docker run --name ci-jenkins \
+    --user root \
+    --detach \
+    --network ci \
+    --publish 9080:8080 --publish 50000:50000 \
+    --mount type=volume,source=ci-jenkins-home,target=//var/jenkins_home \
+    --mount type=bind,source=/var/run/docker.sock,target=//var/run/docker.sock \
+    --mount type=bind,source=/usr/local/bin/docker,target=//usr/local/bin/docker \
+    --env JAVA_OPTS="-Xmx2048M" \
+    --env JENKINS_ARGS="--prefix=/jenkins" \
+    jenkins/jenkins:2.350
 
-    docker run --name ci-sonarqube-data \
-        --detach \
-        --network ci \
-        --mount type=volume,source=ci-postgresql-home,target=//var/lib/postgresql \
-        --mount type=volume,source=ci-sonarqube-data,target=//var/lib/postgresql/data \
-        --env POSTGRES_USER="sonar" \
-        --env POSTGRES_PASSWORD="sonarsonar" \
-        postgres:13.7
+docker run --name ci-sonarqube-data \
+    --detach \
+    --network ci \
+    --mount type=volume,source=ci-postgresql-home,target=//var/lib/postgresql \
+    --mount type=volume,source=ci-sonarqube-data,target=//var/lib/postgresql/data \
+    --env POSTGRES_USER="sonar" \
+    --env POSTGRES_PASSWORD="sonarsonar" \
+    postgres:13.7
 
-    sleep 10
+sleep 10
 
-    docker run --name ci-sonarqube \
-        --detach \
-        --network ci \
-        --publish 9000:9000 \
-        --mount type=volume,source=ci-sonarqube-extensions,target=//opt/sonarqube/extensions \
-        --mount type=volume,source=ci-sonarqube-esdata,target=//opt/sonarqube/data \
-        --env SONARQUBE_JDBC_URL="jdbc:postgresql://ci-sonarqube-data:5432/sonar?charSet=UNICODE" \
-        --env SONARQUBE_JDBC_USERNAME="sonar" \
-        --env SONARQUBE_JDBC_PASSWORD="sonarsonar" \
-        sonarqube:9.4-community -Dsonar.web.context=//sonarqube
+docker run --name ci-sonarqube \
+    --detach \
+    --network ci \
+    --publish 9000:9000 \
+    --mount type=volume,source=ci-sonarqube-extensions,target=//opt/sonarqube/extensions \
+    --mount type=volume,source=ci-sonarqube-esdata,target=//opt/sonarqube/data \
+    --env SONARQUBE_JDBC_URL="jdbc:postgresql://ci-sonarqube-data:5432/sonar?charSet=UNICODE" \
+    --env SONARQUBE_JDBC_USERNAME="sonar" \
+    --env SONARQUBE_JDBC_PASSWORD="sonarsonar" \
+    sonarqube:9.4-community -Dsonar.web.context=//sonarqube
+```
+
+> **_MF:_** For Docker to correctly work, I had to change some stuff. 
+
+> 1. The <span style="background-color:yellow">target</span> argument in the `--mount` tag needs to start with a double `//`, otherwise Windows will prompt an absolute path error. At the sonarqube deployment, don't forget to edit the `-Dsonar.web.context` tag too.
+
+> 2. For Jenkins to run, `--env JENKINS_OPTS="--prefix=/jenkins"` needs to change to `--env JENKINS_ARGS="--prefix=/jenkins"`. Otherwise, the page is not reachable.
+
+> 3. In order for Sonarcube to run, the `vm.max_map_count` needs to be increased. This is an elasticsearch issue. The error: _bootstrap check failure [1] of [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]._ The solution: _1) wsl -d docker-desktop 2) sysctl -w vm.max_map_count=262144._
+    
 
 Note that the preceding commands will set up persistent volumes so all configuration, plugins and data persists across server restarts.
 
 Depending on the underlying OS, Docker daemon might be in a different folder. In those cases, use the right path e.g. `/usr/bin/docker` (the `where` command might be of help).
 
 ### Jenkins configuration
+
+> **_MF:_** Was not too obvious how to open Jenkins. Also, the port was changed. 
 
 On first run, Jenkins will show a wizard to configure the instance. This configuration needs to be done only on first run.
 
