@@ -23,7 +23,7 @@ Both Jenkins and SonarQube servers are required for running the pipelines and co
         --mount type=bind,source=/var/run/docker.sock,target=//var/run/docker.sock \
         --mount type=bind,source=/usr/local/bin/docker,target=//usr/local/bin/docker \
         --env JAVA_OPTS="-Xmx2048M" \
-        --env JENKINS_ARGS="--prefix=/jenkins" \
+        --env JENKINS_OPTS="--prefix=/jenkins" \
         jenkins/jenkins:2.350
 
     docker run --name ci-sonarqube-data \
