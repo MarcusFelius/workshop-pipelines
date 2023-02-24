@@ -19,9 +19,9 @@ Both Jenkins and SonarQube servers are required for running the pipelines and co
         --detach \
         --network ci \
         --publish 9080:8080 --publish 50000:50000 \
-        --mount type=volume,source=ci-jenkins-home,target=/var/jenkins_home \
-        --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-        --mount type=bind,source=/usr/local/bin/docker,target=/usr/local/bin/docker \
+        --mount type=volume,source=ci-jenkins-home,target=//var/jenkins_home \
+        --mount type=bind,source=/var/run/docker.sock,target=//var/run/docker.sock \
+        --mount type=bind,source=/usr/local/bin/docker,target=//usr/local/bin/docker \
         --env JAVA_OPTS="-Xmx2048M" \
         --env JENKINS_OPTS="--prefix=/jenkins" \
         jenkins/jenkins:2.350
@@ -29,8 +29,8 @@ Both Jenkins and SonarQube servers are required for running the pipelines and co
     docker run --name ci-sonarqube-data \
         --detach \
         --network ci \
-        --mount type=volume,source=ci-postgresql-home,target=/var/lib/postgresql \
-        --mount type=volume,source=ci-sonarqube-data,target=/var/lib/postgresql/data \
+        --mount type=volume,source=ci-postgresql-home,target=//var/lib/postgresql \
+        --mount type=volume,source=ci-sonarqube-data,target=//var/lib/postgresql/data \
         --env POSTGRES_USER="sonar" \
         --env POSTGRES_PASSWORD="sonarsonar" \
         postgres:13.7
@@ -41,12 +41,12 @@ Both Jenkins and SonarQube servers are required for running the pipelines and co
         --detach \
         --network ci \
         --publish 9000:9000 \
-        --mount type=volume,source=ci-sonarqube-extensions,target=/opt/sonarqube/extensions \
-        --mount type=volume,source=ci-sonarqube-esdata,target=/opt/sonarqube/data \
+        --mount type=volume,source=ci-sonarqube-extensions,target=//opt/sonarqube/extensions \
+        --mount type=volume,source=ci-sonarqube-esdata,target=//opt/sonarqube/data \
         --env SONARQUBE_JDBC_URL="jdbc:postgresql://ci-sonarqube-data:5432/sonar?charSet=UNICODE" \
         --env SONARQUBE_JDBC_USERNAME="sonar" \
         --env SONARQUBE_JDBC_PASSWORD="sonarsonar" \
-        sonarqube:9.4-community -Dsonar.web.context=/sonarqube
+        sonarqube:9.4-community -Dsonar.web.context=//sonarqube
 
 Note that the preceding commands will set up persistent volumes so all configuration, plugins and data persists across server restarts.
 
