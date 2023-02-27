@@ -125,6 +125,9 @@ Click on `Manage Jenkins` menu option and next click on `Manage Credentials` men
 
 Next, click on `Add Credentials` in the left menu and enter the credentials needed to access Docker Hub.
 
+> **_MF:_** What is my orgname?. I'm using my own account and an access token to make the connection to Docker hub.
+`https://sweetcode.io/how-to-build-and-push-docker-images-to-docker-hub-using-jenkins-pipeline/`
+
 In the `ID` field, enter the credential id as it is going to be referenced from the pipeline, e.g. use `myorgname-docker-hub` where `myorgname` is the organization name in Docker Hub. Press `Create` when finished to save the credentials in the store.
 
 ## The anatomy of a Jenkins pipeline
@@ -219,6 +222,8 @@ To enable these tools along the lifecycle, and to align developer workstation us
 ### Adding JaCoCo agent to gather code coverage metrics during tests
 
 One of the actions to be done along the pipeline, is to gather code coverage metrics when unit tests and integration tests are executed. To do that, there are a few actions needed in preparation for the task.
+
+> **_MF:_** You need to add these blocks to the files in the cloned git repo. 
 
 First, the JaCoCo agent must be added as a Maven dependency in `pom.xml`:
 
