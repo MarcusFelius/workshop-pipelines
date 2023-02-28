@@ -787,3 +787,5 @@ Once all the pieces are together, pipelines configured for every service in our 
 Green balls!
 
 I have a build failure because I got 'Performance tests' twice and 'Dependency vulnerability scan' twice in the name. Jenkins doesn't like this. Then change the name? However, both stages are mostly the same...
+
+Jenkins in a docker container is really slow. 
