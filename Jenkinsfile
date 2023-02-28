@@ -85,13 +85,6 @@ pipeline {
                 perfReport sourceDataFiles: 'target/jmeter/results/*.csv', errorUnstableThreshold: 0, errorFailedThreshold: 5, errorUnstableResponseTimeThreshold: 'default.jtl:100'
             }
         }
-        stage('Dependency vulnerability scan 1') {
-            steps {
-                echo '-=- run dependency vulnerability scan -=-'
-                sh './mvnw dependency-check:check'
-                dependencyCheckPublisher
-            }
-        }
 
         stage('Code inspection & quality gate') {
             steps {
@@ -104,7 +97,7 @@ pipeline {
                 }
             }
         }
-        stage('Dependency vulnerability scan 2') {
+        stage('Dependency vulnerability scan') {
             steps {
                 echo '-=- run dependency vulnerability scan -=-'
                 sh './mvnw dependency-check:check'
