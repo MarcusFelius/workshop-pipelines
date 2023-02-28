@@ -780,6 +780,8 @@ pipeline {
 
 ## Running the pipeline
 
+> **_MF:_** So here I just try and implement the pipeline?
+
 Once all the pieces are together, pipelines configured for every service in our system, it's the time to add the job to Jenkins and execute it.
 
 Green balls!
