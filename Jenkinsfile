@@ -1,8 +1,9 @@
 #!groovy
 
 pipeline {
-    agent{any}
-
+    agent{
+        any{}
+    }
     environment {
         ORG_NAME = 'deors'
         APP_NAME = 'workshop-pipelines'
