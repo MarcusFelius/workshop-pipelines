@@ -70,7 +70,6 @@ pipeline {
             }
         }
 
-        }
         stage('Performance tests') {
             steps {
                 echo '-=- execute performance tests -=-'
