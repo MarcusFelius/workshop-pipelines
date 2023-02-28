@@ -785,3 +785,5 @@ pipeline {
 Once all the pieces are together, pipelines configured for every service in our system, it's the time to add the job to Jenkins and execute it.
 
 Green balls!
+
+I have a build failure because I got 'Performance tests' twice and 'Dependency vulnerability scan' twice in the name. Jenkins doesn't like this. Then change the name? However, both stages are mostly the same...

@@ -71,21 +71,21 @@ pipeline {
             }
         }
 
-        stage('Performance tests') {
+        stage('Performance tests 1') {
             steps {
                 echo '-=- execute performance tests -=-'
                 sh "./mvnw jmeter:configure@configuration jmeter:jmeter jmeter:results -Djmeter.target.host=${TEST_CONTAINER_NAME} -Djmeter.target.port=${APP_LISTENING_PORT} -Djmeter.target.root=${APP_CONTEXT_ROOT}"
                 perfReport sourceDataFiles: 'target/jmeter/results/*.csv'
             }
         }
-        stage('Performance tests') {
+        stage('Performance tests 2') {
             steps {
                 echo '-=- execute performance tests -=-'
                 sh "./mvnw jmeter:configure@configuration jmeter:jmeter jmeter:results -Djmeter.target.host=${TEST_CONTAINER_NAME} -Djmeter.target.port=${APP_LISTENING_PORT} -Djmeter.target.root=${APP_CONTEXT_ROOT}"
                 perfReport sourceDataFiles: 'target/jmeter/results/*.csv', errorUnstableThreshold: 0, errorFailedThreshold: 5, errorUnstableResponseTimeThreshold: 'default.jtl:100'
             }
         }
-        stage('Dependency vulnerability scan') {
+        stage('Dependency vulnerability scan 1') {
             steps {
                 echo '-=- run dependency vulnerability scan -=-'
                 sh './mvnw dependency-check:check'
@@ -104,7 +104,7 @@ pipeline {
                 }
             }
         }
-        stage('Dependency vulnerability scan') {
+        stage('Dependency vulnerability scan 2') {
             steps {
                 echo '-=- run dependency vulnerability scan -=-'
                 sh './mvnw dependency-check:check'
