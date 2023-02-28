@@ -5,7 +5,6 @@ pipeline {
             args '--network ci --mount type=volume,source=ci-maven-home,target=/root/.m2'
         }
     }
-
     environment {
         ORG_NAME = 'deors'
         APP_NAME = 'workshop-pipelines'
@@ -71,14 +70,8 @@ pipeline {
             }
         }
 
-        stage('Performance tests 1') {
-            steps {
-                echo '-=- execute performance tests -=-'
-                sh "./mvnw jmeter:configure@configuration jmeter:jmeter jmeter:results -Djmeter.target.host=${TEST_CONTAINER_NAME} -Djmeter.target.port=${APP_LISTENING_PORT} -Djmeter.target.root=${APP_CONTEXT_ROOT}"
-                perfReport sourceDataFiles: 'target/jmeter/results/*.csv'
-            }
         }
-        stage('Performance tests 2') {
+        stage('Performance tests') {
             steps {
                 echo '-=- execute performance tests -=-'
                 sh "./mvnw jmeter:configure@configuration jmeter:jmeter jmeter:results -Djmeter.target.host=${TEST_CONTAINER_NAME} -Djmeter.target.port=${APP_LISTENING_PORT} -Djmeter.target.root=${APP_CONTEXT_ROOT}"
@@ -115,7 +108,7 @@ pipeline {
                 sh './mvnw docker:push'
             }
         }
-    }
+
     post {
         always {
             echo '-=- remove deployment -=-'
