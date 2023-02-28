@@ -44,6 +44,7 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
+
         stage('Build Docker image') {
             steps {
                 echo '-=- build Docker image -=-'
@@ -57,6 +58,7 @@ pipeline {
                 sh "docker run --name ${TEST_CONTAINER_NAME} --detach --rm --network ci --expose ${APP_LISTENING_PORT} --expose 6300 --env JAVA_OPTS='-Dserver.port=${APP_LISTENING_PORT} -Dspring.profiles.active=ci -javaagent:/jacocoagent.jar=output=tcpserver,address=*,port=6300' ${ORG_NAME}/${APP_NAME}:latest"
             }
         }
+
         stage('Integration tests') {
             steps {
                 echo '-=- execute integration tests -=-'
@@ -89,6 +91,7 @@ pipeline {
                 }
             }
         }
+
         stage('Dependency vulnerability scan') {
             steps {
                 echo '-=- run dependency vulnerability scan -=-'
@@ -101,17 +104,18 @@ pipeline {
                 }
             }
         }
-         stage('Push Docker image') {
+
+        stage('Push Docker image') {
             steps {
                 echo '-=- push Docker image -=-'
                 sh './mvnw docker:push'
             }
         }
-
+    }
     post {
         always {
             echo '-=- remove deployment -=-'
             sh "docker stop ${TEST_CONTAINER_NAME}"
         }
-    }
+    }      
 }
