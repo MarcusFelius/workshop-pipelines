@@ -113,6 +113,8 @@ pipeline {
         }
     }
     post {
-
+        always {
+            echo '-=- remove deployment -=-'
+        }
     }      
 }
