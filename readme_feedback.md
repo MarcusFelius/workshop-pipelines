@@ -22,13 +22,14 @@ docker run --name ci-jenkins \
     --user root \
     --detach \
     --network ci \
+    --privileged \
     --publish 9080:8080 --publish 50000:50000 \
     --mount type=volume,source=ci-jenkins-home,target=//var/jenkins_home \
-    --mount type=bind,source=/var/run/docker.sock,target=//var/run/docker.sock \
-    --mount type=bind,source=/usr/local/bin/docker,target=//usr/local/bin/docker \
+    --mount type=bind,source=//var/run/docker.sock,target=//var/run/docker.sock \
+    --mount type=bind,source="//c/Program Files/Docker/Docker/resources/bin/docker",target=//usr/local/bin/docker \
     --env JAVA_OPTS="-Xmx2048M" \
-    --env JENKINS_ARGS="--prefix=/jenkins" \
-    jenkins/jenkins:2.350
+    --env JENKINS_ARGS="--prefix=//jenkins" \
+    jenkins/jenkins:2.392
 
 docker run --name ci-sonarqube-data \
     --detach \
@@ -479,12 +480,12 @@ pipeline {
     }
 
     environment {
-        ORG_NAME = 'deors'
+        ORG_NAME = 'marcusfelius'
         APP_NAME = 'workshop-pipelines'
         APP_CONTEXT_ROOT = '/'
         APP_LISTENING_PORT = '8080'
         TEST_CONTAINER_NAME = "ci-${APP_NAME}-${BUILD_NUMBER}"
-        DOCKER_HUB = credentials("${ORG_NAME}-docker-hub")
+        DOCKER_HUB = credentials("${ORG_NAME}")
     }
     ...
 }

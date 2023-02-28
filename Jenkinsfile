@@ -2,7 +2,10 @@
 
 pipeline {
     agent{
-        any{}
+        docker {
+            image 'eclipse-temurin:17.0.3_7-jdk'
+            args '--network ci'
+        }
     }
     environment {
         ORG_NAME = 'marcusfelius'
@@ -114,6 +117,7 @@ pipeline {
     post {
         always {
             echo '-=- remove deployment -=-'
+            sh "docker stop ${TEST_CONTAINER_NAME}"
         }
     }      
 }
