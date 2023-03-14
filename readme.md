@@ -4,6 +4,8 @@ Workshop about CI/CD pipelines with Jenkins and Docker.
 
 Workshop delivered in UMA Hackers Week 6 and in Opensouthcode 2019.
 
+>**_MF:_** This readme is with feedback when deploying this solution on a MacBook 13" m1.
+
 ## Preparing for the workshop
 
 Docker is the only pre-requisite. This workshop works with Docker native in any Linux box, with Docker for Mac, and with Docker for Windows.
@@ -46,11 +48,19 @@ Both Jenkins and SonarQube servers are required for running the pipelines and co
         --env SONARQUBE_JDBC_URL="jdbc:postgresql://ci-sonarqube-data:5432/sonar?charSet=UNICODE" \
         --env SONARQUBE_JDBC_USERNAME="sonar" \
         --env SONARQUBE_JDBC_PASSWORD="sonarsonar" \
-        sonarqube:9.4-community -Dsonar.web.context=/sonarqube
+        sonarqube:latest -Dsonar.web.context=/sonarqube
 
 Note that the preceding commands will set up persistent volumes so all configuration, plugins and data persists across server restarts.
 
 Depending on the underlying OS, Docker daemon might be in a different folder. In those cases, use the right path e.g. `/usr/bin/docker` (the `where` command might be of help).
+
+>**_MF:_** Bind error message when running Jenkings _docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /usr/local/bin/docker_. Removing it helps... 
+
+>**_MF:_** When running the jenkins module, I get the same 404 error as on windows.
+
+>**_MF:_** Jenkins needs to run the latest version for all the plugins to work.
+
+>**_MF:_** Sonarcube error: _docker: no matching manifest for linux/arm64/v8 in the manifest list entries_. **tag** changed to latest
 
 ### Jenkins configuration
 
