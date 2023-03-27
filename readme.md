@@ -4,7 +4,7 @@ Workshop about CI/CD pipelines with Jenkins and Docker.
 
 Workshop delivered in UMA Hackers Week 6 and in Opensouthcode 2019.
 
->**_MF:_** This readme is with feedback when deploying this solution on a MacBook 13" m1.
+>**_MF:_** This readme is with feedback when deploying this solution on a MacBook 13" m1 2020.
 
 ## Preparing for the workshop
 
@@ -25,7 +25,7 @@ Both Jenkins and SonarQube servers are required for running the pipelines and co
         --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
         --mount type=bind,source=/usr/local/bin/docker,target=/usr/local/bin/docker \
         --env JAVA_OPTS="-Xmx2048M" \
-        --env JENKINS_OPTS="--prefix=/jenkins" \
+        --env JENKINS_ARGS="--prefix=/jenkins" \
         jenkins/jenkins:2.350
 
     docker run --name ci-sonarqube-data \
@@ -54,9 +54,20 @@ Note that the preceding commands will set up persistent volumes so all configura
 
 Depending on the underlying OS, Docker daemon might be in a different folder. In those cases, use the right path e.g. `/usr/bin/docker` (the `where` command might be of help).
 
->**_MF:_** Bind error message when running Jenkings _docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /usr/local/bin/docker_. Removing it helps... 
+>**_MF:_** Bind error message when running Jenkings _docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /usr/local/bin/docker_. Changed to:
 
->**_MF:_** When running the jenkins module, I get the same 404 error as on windows.
+    docker run --name ci-jenkins \
+        --user root \
+        --detach \
+        --network ci \
+        --publish 9080:8080 --publish 50000:50000 \
+        --mount type=volume,source=ci-jenkins-home,target=/var/jenkins_home \
+        --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+        -v /usr/local/bin/docker:/usr/local/bin/docker \
+        --env JAVA_OPTS="-Xmx2048M" \
+        --env JENKINS_OPTS="--prefix=/jenkins" \
+        jenkins/jenkins:2.350
+
 
 >**_MF:_** Jenkins needs to run the latest version for all the plugins to work.
 
@@ -71,6 +82,8 @@ The first step is to confirm the initial administrator password which is kept sa
 Next step is to install an initial selection of plugins. Starting with the suggested plugins is generally a good idea.
 
 To complete the wizard, create the first administrator user. Take note of the user and password as it will be required to login into Jenkins from now on.
+
+>**_MF:_** Jenkins shows a lot of warnings that this version is vulnerable and outdated.
 
 Once the wizard finishes the initial configuration, there are few other plugins that will be used in the workshop. To install them, click on `Manage Jenkins` menu option and next click on `Manage Plugins` menu option. In the Available tab, search for the required plugins, click the selection checkbox and then, at the bottom of the page, select the action `Install without restart`. The plugins needed are:
 
@@ -88,6 +101,8 @@ To integrate SonarQube with Jenkins, the Jenkins plugin must be configured to re
 Before configuring that integration, a SonarQube API token must be created. That token is required to authenticate requests coming from Jenkins.
 
 Login to SonarQube using the default credentials: both username and password are simply `admin`. On first run, a tutorial wizard will show but it can be skipped for now.
+
+>**_MF:_** For Sonarqube to work. The container should be made without the `-Dsonar.web.context=/sonarqube` line. Otherwise there will be a 404 error.
 
 Click on `Administration` on the top menu and afterwards on `Security` and `Users` in the horizonal menu below. In the `Administrator` user configuration row, there is a menu icon to the right with the label `Update Tokens`. Click on it, and in the pop-up dialog, in the text box below `Generate Tokens` enter `ci-sonarqube` (or any other meaningful name) and press the `Generate` button. The API token will be shown below. Take note of it, as this is the last time it will be shown in the UI.
 
