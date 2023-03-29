@@ -102,7 +102,7 @@ Before configuring that integration, a SonarQube API token must be created. That
 
 Login to SonarQube using the default credentials: both username and password are simply `admin`. On first run, a tutorial wizard will show but it can be skipped for now.
 
->**_MF:_** For Sonarqube to work. The container should be made without the `-Dsonar.web.context=/sonarqube` line. Otherwise there will be a 404 error.
+>**_MF:_** The username password combination of admin admin doesn't seem to work.
 
 Click on `Administration` on the top menu and afterwards on `Security` and `Users` in the horizonal menu below. In the `Administrator` user configuration row, there is a menu icon to the right with the label `Update Tokens`. Click on it, and in the pop-up dialog, in the text box below `Generate Tokens` enter `ci-sonarqube` (or any other meaningful name) and press the `Generate` button. The API token will be shown below. Take note of it, as this is the last time it will be shown in the UI.
 
